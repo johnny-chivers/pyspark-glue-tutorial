@@ -285,7 +285,7 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
     glueContext.write_dynamic_frame.from_options(
                                 frame = dyfCustomersConvert,
                                 connection_type="s3", 
-                                connection_options = {"path": "s3://<YOUR_S£_BUCKET_NAME>/write_down_dyf_to_s3"}, 
+                                connection_options = {"path": "s3://<YOUR_S3_BUCKET_NAME>/write_down_dyf_to_s3"}, 
                                 format = "csv", 
                                 format_options={
                                     "separator": ","
