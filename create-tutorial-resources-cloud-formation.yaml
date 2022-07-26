@@ -1,0 +1,247 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AWS CloudFormation which creates the resources for the aws pyspark for glue tutorial 
+### 
+# Parameters for the cloudformation template
+Parameters:
+  S3PySparkBucketName:
+    Type: String
+    Description: Bucket name for the aws tutorial
+  PreFixForGlueNotebookRoleAndPolicy:
+    Type: String
+    Description: Prefix for glue policy and role
+Resources:
+  S3BucketForData:
+    Type: AWS::S3::Bucket
+    Properties: 
+      BucketName: !Ref S3PySparkBucketName
+      Tags:
+      - Key: identifier
+        Value: pySparktutorial
+  ###
+  # Database created for the tables to reside in
+  GlueDatabase:
+    Type: AWS::Glue::Database
+    Properties: 
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput: 
+        Name: pyspark_tutorial_db
+        Description: "This database contains the tables for the PySpark tutorial"
+  ###
+  # Create the customer table which depends on the GlueDatabase and S3 bucket
+  GlueCustomerTable:
+    DependsOn: 
+    - GlueDatabase
+    - S3BucketForData
+    Type: AWS::Glue::Table
+    Properties: 
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: pyspark_tutorial_db
+      TableInput: 
+        Name: customers
+        Description: Table for customer data
+        TableType: EXTERNAL_TABLE
+        StorageDescriptor:
+          Columns:
+          - Name: customerid
+            Type: bigint
+          - Name: firstname
+            Type: string
+          - Name: lastname
+            Type: string
+          - Name: fullname
+            Type: string
+          Location: !Sub s3://${S3PySparkBucketName}/customers
+          InputFormat: org.apache.hadoop.mapred.TextInputFormat
+          OutputFormat: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+          SerdeInfo:
+            Parameters: 
+              field.delim: ","  
+            SerializationLibrary: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+  ###
+  # Create the customers_write table which depends on the GlueDatabase and S3 bucket
+  GlueCustomerWriteDyfTable:
+    DependsOn: 
+    - GlueDatabase
+    - S3BucketForData
+    Type: AWS::Glue::Table
+    Properties: 
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: pyspark_tutorial_db
+      TableInput: 
+        Name: customers_write_dyf
+        Description: Table for customer data which has been wrote from a Glue Dynamic Dataframe
+        TableType: EXTERNAL_TABLE
+        StorageDescriptor:
+          Columns:
+          - Name: customerid
+            Type: bigint
+          - Name: firstname
+            Type: string
+          - Name: lastname
+            Type: string
+          - Name: fullname
+            Type: string
+          Location: !Sub s3://${S3PySparkBucketName}/customers_write_dyf
+          InputFormat: org.apache.hadoop.mapred.TextInputFormat
+          OutputFormat: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+          SerdeInfo:
+            Parameters: 
+              field.delim: ","  
+            SerializationLibrary: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+  ###
+  # Create the employees table which depends on the GlueDatabase and S3 bucket
+  GlueEmployeesTable:
+    DependsOn: 
+    - GlueDatabase
+    - S3BucketForData
+    Type: AWS::Glue::Table
+    Properties: 
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: pyspark_tutorial_db
+      TableInput: 
+        Name: employees
+        Description: Table for employees data
+        TableType: EXTERNAL_TABLE
+        StorageDescriptor:
+          Columns:
+          - Name: employeeid
+            Type: bigint
+          - Name: managerid
+            Type: bigint
+          - Name: firstname
+            Type: string
+          - Name: lastname
+            Type: string
+          - Name: fullname
+            Type: string
+          - Name: jobtitle
+            Type: string      
+          - Name: organizationlevel
+            Type: int      
+          - Name: maritalstatus
+            Type: string
+          - Name: gender
+            Type: string 
+          - Name: territory
+            Type: string
+          - Name: country
+            Type: string
+          - Name: group
+            Type: string
+          Location: !Sub s3://${S3PySparkBucketName}/employees
+          InputFormat: org.apache.hadoop.mapred.TextInputFormat
+          OutputFormat: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+          SerdeInfo:
+            Parameters: 
+              field.delim: ","
+            SerializationLibrary: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+  ###
+  # Create the orders table which depends on the GlueDatabase and S3 bucket
+  GlueOrdersTable:
+    DependsOn: 
+    - GlueDatabase
+    - S3BucketForData
+    Type: AWS::Glue::Table
+    Properties: 
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: pyspark_tutorial_db
+      TableInput: 
+        Name: orders
+        Description: Table for employees data
+        TableType: EXTERNAL_TABLE
+        StorageDescriptor:
+          Columns:
+          - Name: salesorderid
+            Type: bigint
+          - Name: salesorderdetailid
+            Type: int
+          - Name: orderdate
+            Type: string
+          - Name: duedate 
+            Type: string
+          - Name: shipdate
+            Type: string
+          - Name: employeeid
+            Type: bigint
+          - Name: customerid
+            Type: bigint
+          - Name: subtotal
+            Type: decimal(17,4)
+          - Name: taxamt
+            Type: decimal(17,4)
+          - Name: freight
+            Type: decimal(17,4)
+          - Name: totaldue
+            Type: decimal(17,4)
+          - Name: productid
+            Type: int
+          - Name: orderqty
+            Type: int
+          - Name: unitprice
+            Type: decimal(17,4)
+          - Name: unitpricediscount
+            Type: decimal(17,4)
+          - Name: linetotal
+            Type: decimal(17,4)
+          Location: !Sub s3://${S3PySparkBucketName}/orders
+          InputFormat: org.apache.hadoop.mapred.TextInputFormat
+          OutputFormat: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+          SerdeInfo:
+            Parameters: 
+              field.delim: ","
+            SerializationLibrary: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+  ###
+  # Create Role for Glue Notebook and interactive sessions NB this allows access to all glue resources and S3
+  GlueNotebookRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - glue.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Description: Role for Glue Notebook PySpark tutorial. 
+      MaxSessionDuration: 43200
+      Policies:
+        - PolicyName: !Sub ${PreFixForGlueNotebookRoleAndPolicy}Policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "glue:*"
+                  - "s3:*"
+                  - "ec2:DescribeVpcEndpoints"
+                  - "ec2:DescribeRouteTables"
+                  - "ec2:CreateNetworkInterface"
+                  - "ec2:DeleteNetworkInterface"
+                  - "ec2:DescribeNetworkInterfaces"
+                  - "ec2:DescribeSecurityGroups"
+                  - "ec2:DescribeSubnets"
+                  - "ec2:DescribeVpcAttribute"
+                  - "iam:ListRolePolicies"
+                  - "iam:GetRole"
+                  - "iam:GetRolePolicy"
+                  - "cloudwatch:PutMetricData"
+                  - "ec2:CreateTags"
+                  - "ec2:DeleteTags"
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - "s3:*"
+                Resource: 
+                  - "arn:aws:s3:::{S3PySparkBucketName}/*"
+                  - "arn:aws:s3:::{S3PySparkBucketName}/"
+              - Effect: Allow
+                Action: 
+                - "iam:GetRole"
+                - "iam:PassRole"
+                Resource: !Sub arn:aws:iam::${AWS::AccountId}:role/${PreFixForGlueNotebookRoleAndPolicy}Role
+      RoleName: !Sub ${PreFixForGlueNotebookRoleAndPolicy}Role
