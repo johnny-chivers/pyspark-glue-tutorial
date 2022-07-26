@@ -274,7 +274,7 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
     from awsglue.dynamicframe import DynamicFrame
 
     #Convert from Spark Data Frame to Glue Dynamic Frame
-    dyfCustomersConvert = Dynamic.fromDF(sparkDf, glueContext, "convert")
+    dyfCustomersConvert = DynamicFrame.fromDF(sparkDf, glueContext, "convert")
 
     #Show converted Glue Dynamic Frame
     dyfCustomersConvert.show()
