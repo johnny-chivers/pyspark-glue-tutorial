@@ -46,9 +46,9 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
 | 275 |  274 | Michael | Blythe            | Michael Blythe           | Sales Representative         | 3 | S | M | Northeast      | US   | North America |
 
 ## Main Tutorial 
-1. Create Resources using supplied cloud formation template (see video)
-2. Upload csv folder/files to S3 bucket (see video)
-3. Create Glue Notebook (see videox)
+1. Create Resources using supplied cloud formation template [see video](https://youtu.be/DICsZiwuHJo?t=54)
+2. Upload csv folder/files to S3 bucket [see video](https://youtu.be/DICsZiwuHJo?t=330)
+3. Create Glue Notebook [see videox](https://youtu.be/DICsZiwuHJo?t=402)
 5. Read data from Customers Table using Notebook Using Dyanmic Frame 
     ``` 
     # Read from the customers table in the glue data catalog using a dynamic frame
@@ -309,7 +309,7 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
 
 ## Useful Links
 
-- [youtube video](https://youtu.be/grfSNj2EMwo) 
+- [youtube video](https://youtu.be/DICsZiwuHJo) 
 - [website](https://www.johnnychivers.co.uk)
 - [buy me a coffee](https://www.buymeacoffee.com/johnnychivers)
 
