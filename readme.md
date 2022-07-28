@@ -194,7 +194,7 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
     # show df with new column
     dfNewColumn.show()
     ```
-- Using concat to concatonate to columns together
+- Using concat to concatonate two columns together
     ```
     #import concat from functions 
     from  pyspark.sql.functions import concat
