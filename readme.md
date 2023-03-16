@@ -11,7 +11,7 @@
 
 ## What's included
 
-The repo is to supplement the [youtube video](https://youtu.be/DICsZiwuHJo) on PySpark for Glue. It includes a cloudfomation template which creates the s3 bucket, glue tables, IAM roles, and csv data files. 
+The repo is to supplement the [youtube video](https://youtu.be/DICsZiwuHJo) on PySpark for Glue. It includes a cloudformation template which creates the s3 bucket, glue tables, IAM roles, and csv data files. 
 
 ## Overview 
 1. Spin up resources using cloudformation template
@@ -20,7 +20,7 @@ The repo is to supplement the [youtube video](https://youtu.be/DICsZiwuHJo) on P
 4. Execute PySpark code
 
 ## Data
-Below are the schemas for the tables created in the Glue Data Catalog by the cloudformation template. They also include a small sampke of data to aid the explaination of the coding syntax.
+Below are the schemas for the tables created in the Glue Data Catalog by the cloudformation template. They also include a small sample of data to aid the explanation of the coding syntax.
 
 **Customers**
 | Customerid      | Firstname | Lastname| Fullname |
@@ -49,7 +49,7 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
 1. Create Resources using supplied cloud formation template [see video](https://youtu.be/DICsZiwuHJo?t=54)
 2. Upload csv folder/files to S3 bucket [see video](https://youtu.be/DICsZiwuHJo?t=330)
 3. Create Glue Notebook [see videox](https://youtu.be/DICsZiwuHJo?t=402)
-5. Read data from Customers Table using Notebook Using Dyanmic Frame 
+5. Read data from Customers Table using Notebook Using Dynamic Frame 
     ``` 
     # Read from the customers table in the glue data catalog using a dynamic frame
     dynamicFrameCustomers = glueContext.create_dynamic_frame.from_catalog(
@@ -57,7 +57,7 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
     table_name = "customers"
     )
 
-    # Show the top 10 rows from the dyanmic dataframe
+    # Show the top 10 rows from the dynamic dataframe
     dynamicFrameCustomers.show(10)
     ```
 
@@ -67,15 +67,15 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
     dynamicFrameCustomers.printSchema()
     ```
 
-8. Count The Number of Rows in a Dyanmic DataFrame
+8. Count The Number of Rows in a Dynamic DataFrame
     ```
-    # Count The Number of Rows in a Dyanmic Dataframe 
+    # Count The Number of Rows in a Dynamic Dataframe 
     dynamicFrameCustomers.count()
     ```
 
 9. Select Fields From A Dynamic frame
     ```
-    # Selecting certain fields from a Dyanmic DataFrame
+    # Selecting certain fields from a Dynamic DataFrame
     dyfCustomerSelectFields = dynamicFrameCustomers.select_fields(["customerid", "fullname"])
 
     # Show top 10
@@ -120,7 +120,7 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
 13. Join Two Dynamic frames on a equality join
     - read up orders dynamic frame
         ```
-        # Read from the ccustomers table in the glue data catalog using a dynamic frame
+        # Read from the customers table in the glue data catalog using a dynamic frame
         dynamicFrameOrders = glueContext.create_dynamic_frame.from_catalog(
         database = "pyspark_tutorial_db", 
         table_name = "orders"
@@ -131,16 +131,16 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
         ```
     - join customers and orders dynamic frame
         ```
-        # Join wwo dynamic frames on an equality join
-        dfyjoin = dynamicFrameCustomers.join(["customerid"],["customerid"],dynamicFrameOrders)
+        # Join two dynamic frames on an equality join
+        dyfjoin = dynamicFrameCustomers.join(["customerid"],["customerid"],dynamicFrameOrders)
 
         # show top 10 rows for the joined dynamic 
-        dfyjoin.show(10)
+        dyfjoin.show(10)
         ```
 
 14. Write Down Data from a Dynamic Frame To S3 
     - Create a folder in the S3 bucket created by Cloudformation to use as a location to write the data down to `write_down_dyf_to_s3`
-    - Write down data to S3 using the dyanmic DataFrame writer class for an S3 path. 
+    - Write down data to S3 using the dynamic DataFrame writer class for an S3 path. 
         ```
         # write down the data in a Dynamic Frame to S3 location. 
         glueContext.write_dynamic_frame.from_options(
@@ -173,7 +173,7 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
     sparkDf.show()
     ```
 
-17. Selecting Colunmns In a Spark DataFrame 
+17. Selecting Columns In a Spark DataFrame 
     ```
     # Select columns from spark dataframe
     dfSelect = sparkDf.select("customerid","fullname")
@@ -194,7 +194,7 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
     # show df with new column
     dfNewColumn.show()
     ```
-- Using concat to concatonate two columns together
+- Using concat to concatenate two columns together
     ```
     #import concat from functions 
     from  pyspark.sql.functions import concat
@@ -223,7 +223,7 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
     ```
 21. GroupBy and Aggregate Operations
     ```
-    # Group by lastname then print counts of lastaname and show
+    # Group by lastname then print counts of lastname and show
     sparkDf.groupBy("lastname").count().show()
     ```
 22. Filtering Columns and Where clauses 
@@ -241,7 +241,7 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
 23. Joins 
 - read up orders dataset and convert to spark dataframe
     ```
-    # Read from the ccustomers table in the glue data catalog using a dynamic frame and convert to spark dataframe
+    # Read from the customers table in the glue data catalog using a dynamic frame and convert to spark dataframe
     dfOrders = glueContext.create_dynamic_frame.from_catalog(
                                             database = "pyspark_tutorial_db", 
                                             table_name = "orders"
@@ -270,7 +270,7 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
 - delete data from S3 in `customers_write_dyf` and `write_down_dyf_to_s3`
 - convert from spark Dataframe to Glue Dynamic DataFrame
     ```
-    # Import Dyanmic DataFrame class
+    # Import Dynamic DataFrame class
     from awsglue.dynamicframe import DynamicFrame
 
     #Convert from Spark Data Frame to Glue Dynamic Frame
@@ -279,7 +279,7 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
     #Show converted Glue Dynamic Frame
     dyfCustomersConvert.show()
     ```
-- Write Dyanmic DataFrame down to S3 location 
+- Write Dynamic DataFrame down to S3 location 
     ```
     # write down the data in converted Dynamic Frame to S3 location. 
     glueContext.write_dynamic_frame.from_options(
@@ -292,7 +292,7 @@ Below are the schemas for the tables created in the Glue Data Catalog by the clo
                                     },
                                 transformation_ctx = "datasink2")
     ```
-- Write Dyanmic DataFrame using Glue Data Catalog
+- Write Dynamic DataFrame using Glue Data Catalog
     ```
     # write data from the converted to customers_write_dyf table using the meta data stored in the glue data catalog 
     glueContext.write_dynamic_frame.from_catalog(
